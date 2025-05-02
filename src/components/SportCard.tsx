@@ -11,7 +11,7 @@ export default function SportCard({ event }: SportCardProps) {
       <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform group-hover:scale-[1.02]">
         <div className="relative">
           <img
-            src={event.imageUrl}
+            src={event.imageurl}
             alt={event.title}
             className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" // Apply scale on hover
           />
@@ -20,9 +20,6 @@ export default function SportCard({ event }: SportCardProps) {
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-indigo-600 uppercase">
               {event.category}
-            </span>
-            <span className="text-sm font-medium text-gray-600">
-              ${event.price.toFixed(2)} {/* Format price to two decimal places */}
             </span>
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h3>

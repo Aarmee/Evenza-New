@@ -30,26 +30,6 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-            <li>
-                <Link to="/events" className="text-gray-400 hover:text-white">
-                  All Events
-                </Link>
-              </li>
-              <li>
-                <Link to="/concert" className="text-gray-400 hover:text-white">
-                  Concerts
-                </Link>
-              </li>
-              <li>
-                <Link to="/movies" className="text-gray-400 hover:text-white">
-                  Movies
-                </Link>
-              </li>
-              <li>
-                <Link to="/sport" className="text-gray-400 hover:text-white">
-                  Sports
-                </Link>
-              </li>
               <li>
                 <Link to="/about" className="text-gray-400 hover:text-white">
                   About Us
@@ -60,7 +40,12 @@ export default function Footer() {
                   Contact
                 </Link>
               </li>
-            </ul>
+              <li>
+                <Link to="/refund" className="text-gray-400 hover:text-white">
+                    Refund Policy
+                </Link>
+               </li>
+             </ul>
           </div>
           {/* Support */}
           <div>
@@ -79,11 +64,6 @@ export default function Footer() {
               <li>
                 <Link to="/privacy-policy" className="text-gray-400 hover:text-white">
                   Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/refund" className="text-gray-400 hover:text-white">
-                  Refund Policy
                 </Link>
               </li>
             </ul>

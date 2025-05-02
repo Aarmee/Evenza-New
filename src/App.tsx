@@ -6,7 +6,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import SeatSelectionPage from './pages/SeatSelectionPage';
-import PaymentPage from './pages/PaymentPage';
+import SearchResults from './pages/SearchResults';
 import MoviePage from './pages/MoviePage'; // Adjust the import path as necessary
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -23,6 +23,7 @@ import RefundPage from './pages/RefundPage';
 import EventsPage from './pages/EventsPage';
 import EventDetailPage from './pages/EventDetailPage';
 import FAQPage from './pages/FAQPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
@@ -37,16 +38,16 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/movies" element={<MoviePage />} />
             <Route path="/select-seats" element={<SeatSelectionPage />} />
-            <Route path="/checkout" element={<PaymentPage />} />
+            <Route path="/search" element={<SearchResults />} />
             <Route path="/about" element={<AboutPage/>} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/movies/:id" element={<MovieDetailPage />} />
             <Route path="/seat" Component={SeatSelectionPage} /> 
             <Route path="/stadium" Component={StadiumSelection} /> 
             <Route path="/concertseat" Component={ConcertSeat} /> 
-            <Route path="/concert" Component={ConcertPage} /> 
+            <Route path="/concert" Component={ConcertPage} />
             <Route path="/concert/:id" element={<ConcertDetailPage />} />
-            <Route path="/concert/:id/book" Component={PaymentPage} />
+
             <Route path="/sport" Component={SportPage} /> 
             <Route path="/sport/:id" element={<SportDetailPage />} />
             <Route path="/terms-and-conditions" Component={TermsAndConditionsPage} />
@@ -55,6 +56,7 @@ function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetailPage />} />
             <Route path="/faq" Component={FAQPage} />
+            <Route path="/register" Component={RegisterPage} />
           </Routes>
         </main>
         <Footer />

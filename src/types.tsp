@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-// types.ts
+// types.tsp
 // Assuming this is in your types file (e.g., src/types.ts)
 // src/types.ts
 // src/types.ts
@@ -51,21 +51,19 @@ export interface Booking {
 
 // src/types.ts
 export interface Movie {
-  posterUrl: string | undefined;
-  description: ReactNode;
-  priceRange: ReactNode;
-  location: ReactNode;
   id: string;
   title: string;
-  genre: string[]; // Ensure this is an array if you want to use map
+  description: string;
+  genre: string;       // stored as JSON string like '["Action", "Drama"]'
   releaseDate: string;
   rating: number;
   imageUrl: string;
   duration: string;
-  cast: string[]; // Ensure this is an array
+  cast: string;        // stored as JSON string like '["Actor 1", "Actor 2"]'
   director: string;
   language: string;
-  reviews: { user: string; comment: string; rating: number }[]; // Array of review objects
+  priceRange: string;
+  location: string;
 }
 
 export interface Cast {

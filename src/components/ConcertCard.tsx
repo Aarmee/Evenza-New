@@ -10,7 +10,7 @@ export default function ConcertCard({ concert }: ConcertCardProps) {
     <Link to={`/concert/${concert.id}`} className="group">
       <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform group-hover:scale-[1.02]">
         <img
-          src={concert.imageUrl}
+          src={concert.imageurl}
           alt={concert.title}
           className="w-full h-48 object-cover"
         />
@@ -18,9 +18,6 @@ export default function ConcertCard({ concert }: ConcertCardProps) {
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-indigo-600 uppercase">
               {concert.category}
-            </span>
-            <span className="text-sm font-medium text-gray-600">
-              ${concert.price.toFixed(2)} {/* Format price to two decimal places */}
             </span>
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{concert.title}</h3>

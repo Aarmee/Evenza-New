@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import EventVideoCard from '../components/EventVideoCard';
 import { Event } from '../types';
 import { Music, Trophy, Theater, Clock } from 'lucide-react';
 import ReactPlayer from 'react-player';
+
 // Mock event data
 const MOCK_EVENTS: Event[] = [
   {
@@ -14,7 +15,6 @@ const MOCK_EVENTS: Event[] = [
     date: '2024-10-10',
     time: '18:00',
     venue: 'West End Theater, London',
-    price: 60.00,
     location: 'London',
     category: 'theater',
     imageUrl: 'https://staticeu.sweet.tv/images/cache/horizontal_posters/BCYGYEQCMVXCAHJKAIEAE===/13872-les-miserables_.jpg',
@@ -26,7 +26,6 @@ const MOCK_EVENTS: Event[] = [
     date: '2024-10-20',
     time: '19:00',
     venue: 'Cafe, San Francisco',
-    price: 20.00,
     location: 'San Francisco',
     category: 'concert',
     imageUrl: 'https://t4.ftcdn.net/jpg/08/52/43/17/360_F_852431753_mSZMX9iaxe7pIBjY4SB8pOwEc0qDR2iZ.jpg',
@@ -38,7 +37,6 @@ const MOCK_EVENTS: Event[] = [
     date: '2024-11-01',
     time: '19:30',
     venue: 'Shakespeare Theater, London',
-    price: 45.00,
     location: 'London',
     category: 'theater',
     imageUrl: 'https://webapp2.wright.edu/web1/newsroom/files/2014/11/RomeoAndJuliet2.jpg',
@@ -50,9 +48,8 @@ const MOCK_EVENTS: Event[] = [
     date: '2024-09-20',
     time: '20:00',
     venue: 'United Center, Chicago',
-    price: 300.00,
     location: 'Chicago',
-    category: 'Concert',
+    category: 'concert',
     imageUrl: 'https://www.usatoday.com/gcdn/-mm-/98c88f66dedc33e13e6cc28e741e44d38281b35f/c=0-0-2760-2075/local/-/media/2016/11/21/USATODAY/USATODAY/636153602053989898-538401266.jpg',
   },
   {
@@ -62,53 +59,37 @@ const MOCK_EVENTS: Event[] = [
     date: '2024-12-01',
     time: '15:00',
     venue: 'Ballet Theater, Chicago',
-    price: 50.00,
     location: 'Chicago',
     category: 'theater',
     imageUrl: 'https://nevadaballetorg-1faa6.kxcdn.com/wp-content/uploads/2024/06/NBT-TheNutcracker-TSC-Website-Image-864x490-1-1.jpg',
   },
 ];
+
 // Categories with links
 const CATEGORIES = [
-  { id: 'events', label: 'All Events', icon: Music, link: '/events' },
+  { id: 'all', label: 'All Events', icon: Music, link: '/events' },
   { id: 'concert', label: 'Concerts', icon: Music, link: '/concert' },
   { id: 'sports', label: 'Sports', icon: Trophy, link: '/sport' },
-  { id: 'movies', label: 'Movies', icon: Theater, link: '/movies' }, // Added Movies category
+  { id: 'movies', label: 'Movies', icon: Theater, link: '/movies' },
 ];
+
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [, setSearchQuery] = useState<string>('');
-  // Sort events by date
-  const sortedEvents: Event[] = [...MOCK_EVENTS].sort((a, b) => {
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
-    return dateA - dateB;
-  });
-  const latestEvents: Event[] = sortedEvents.slice(0, 4);
-  // Filter events based on category and search query
+  const navigate = useNavigate();
+
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      navigate(`/search?query=${query}`);
+    }
+  };
+
+  const latestEvents: Event[] = MOCK_EVENTS.slice(0, 4); // Get the latest 4 events
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
       {/* Video Background Hero Section */}
       <div className="relative h-screen overflow-hidden">
         <div className="absolute inset-0">
-          <ReactPlayer
-            url="https://player.vimeo.com/video/459849442"
-            playing
-            loop
-            muted
-            width="100%"
-            height="100%"
-            config={{
-              vimeo: {
-                playerOptions: {
-                  background: true,
-                  autoplay: true,
-                  controls: false,
-                  responsive: true,
-                },
-              },
-            }}
-          />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-indigo-900/90 backdrop-blur-sm"></div>
         </div>
         <div className="relative h-full flex items-center">
@@ -120,7 +101,7 @@ export default function HomePage() {
               Discover and book the most exciting events happening around you
             </p>
             <div className="animate-fade-in-up stagger-delay-2">
-              <SearchBar onSearch={setSearchQuery} />
+              <SearchBar onSearch={handleSearch} />
             </div>
           </div>
         </div>
@@ -144,8 +125,7 @@ export default function HomePage() {
           ))}
         </div>
       </div>
-      {/* Popular Events Section */}
-      
+
       {/* Categories Section */}
       <div className="mb-12 animate-fade-in-up stagger-delay-3">
         <div className="flex justify-center space-x-6">
@@ -169,6 +149,7 @@ export default function HomePage() {
           })}
         </div>
       </div>
+
       {/* Newsletter Section */}
       <div className="bg-gradient-to-r from-indigo-800 to-purple-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">

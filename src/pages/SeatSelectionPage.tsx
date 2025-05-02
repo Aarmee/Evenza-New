@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ScreenShare as Screen, Info } from 'lucide-react';
+
 interface Seat {
   id: string;
   row: string;
@@ -8,43 +9,49 @@ interface Seat {
   price: number;
   status: 'available' | 'selected' | 'sold';
 }
+
 const SEAT_LAYOUT = {
   NORMAL: { rows: ['K'], seatsPerRow: 25, price: 520 },
   EXECUTIVE: { rows: ['J', 'I', 'H', 'G', 'F', 'E'], seatsPerRow: 25, price: 320 },
   PREMIUM: { rows: ['D', 'C', 'B'], seatsPerRow: 25, price: 300 },
   VIP: { rows: ['A'], seatsPerRow: 25, price: 280 }
 };
+
 export default function SeatSelectionPage() {
   const navigate = useNavigate();
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
-  const generateSeats = () => {
-    const seats: Seat[] = [];
+  const [seats, setSeats] = useState<Seat[]>(generateSeats());
+
+  function generateSeats(): Seat[] {
+    const generated: Seat[] = [];
     Object.entries(SEAT_LAYOUT).forEach(([, layout]) => {
       layout.rows.forEach(row => {
         for (let i = 1; i <= layout.seatsPerRow; i++) {
-          seats.push({
+          generated.push({
             id: `${row}${i}`,
             row,
             number: i,
             price: layout.price,
-            status: Math.random() > 0.8 ? 'sold' : 'available'
+            status: 'available'
           });
         }
       });
     });
-    return seats;
-  };
-  const [seats] = useState<Seat[]>(generateSeats());
+    return generated;
+  }
+
   const handleSeatClick = (seat: Seat) => {
     if (seat.status === 'sold') return;
     const isSelected = selectedSeats.find(s => s.id === seat.id);
     if (isSelected) {
       setSelectedSeats(selectedSeats.filter(s => s.id !== seat.id));
-    } else {
+    } else if (selectedSeats.length < 10) {
       setSelectedSeats([...selectedSeats, seat]);
     }
   };
+
   const totalAmount = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+
   const getSeatStatus = (seat: Seat) => {
     if (seat.status === 'sold') return 'bg-gray-300 cursor-not-allowed';
     if (selectedSeats.find(s => s.id === seat.id)) {
@@ -52,6 +59,55 @@ export default function SeatSelectionPage() {
     }
     return 'bg-white hover:bg-indigo-100';
   };
+
+  const bookSeats = async () => {
+    if (selectedSeats.length === 0) return;
+
+    try {
+      const res = await fetch('http://localhost:8080/api/payment/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: totalAmount })
+      });
+
+      const order = await res.json();
+
+      const options = {
+        key: 'rzp_test_gI67fXiO9u1sAK', // Replace with your Razorpay key
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Cinema Seat Booking',
+        description: `Seats: ${selectedSeats.map(s => s.id).join(', ')}`,
+        order_id: order.id,
+        handler: function (response: any) {
+          alert('Payment Successful!\nPayment ID: ' + response.razorpay_payment_id);
+
+          // Simulate booking after payment
+          const updatedSeats = seats.map(seat =>
+            selectedSeats.find(s => s.id === seat.id)
+              ? { ...seat, status: 'sold' }
+              : seat
+          );
+          setSeats(updatedSeats);
+          setSelectedSeats([]);
+          navigate('/checkout');
+        },
+        prefill: {
+          name: 'Guest User',
+          email: 'guest@example.com',
+          contact: '9999999999'
+        },
+        theme: { color: '#6366f1' }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error('Payment initiation failed:', err);
+      alert('Something went wrong while initiating payment.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-6xl mx-auto px-4">
@@ -73,6 +129,7 @@ export default function SeatSelectionPage() {
               </div>
             </div>
           </div>
+
           <div className="mb-8">
             <div className="w-full h-4 bg-gradient-to-b from-gray-300 to-gray-200 rounded-t-lg"></div>
             <div className="flex justify-center my-8">
@@ -80,6 +137,7 @@ export default function SeatSelectionPage() {
               <span className="ml-2 text-gray-500">Screen</span>
             </div>
           </div>
+
           <div className="space-y-8">
             {Object.entries(SEAT_LAYOUT).map(([category, layout]) => (
               <div key={category} className="space-y-2">
@@ -98,7 +156,7 @@ export default function SeatSelectionPage() {
                             key={seat.id}
                             onClick={() => handleSeatClick(seat)}
                             disabled={seat.status === 'sold'}
-                            className={`w-10 h-10 rounded text-xs font-medium border border-gray-300 ${getSeatStatus(seat)}`}
+                            className={`w-10 h-10 rounded text-xs font-medium border border-gray-300 m-0.5 ${getSeatStatus(seat)}`}
                           >
                             {seat.number}
                           </button>
@@ -109,6 +167,7 @@ export default function SeatSelectionPage() {
               </div>
             ))}
           </div>
+
           <div className="mt-8 border-t pt-6">
             <div className="flex justify-between items-center">
               <div>
@@ -120,18 +179,17 @@ export default function SeatSelectionPage() {
               <div className="text-right">
                 <p className="text-lg font-semibold">Total: ₹{totalAmount}</p>
                 <button
-                  onClick={() => navigate('/checkout')}
+                  onClick={bookSeats}
                   disabled={selectedSeats.length === 0}
                   className="mt-2 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 disabled:bg-gray-400"
                 >
-                  <Link to="/checkout" className="w-full h-full flex items-center justify-center">
                   Proceed to Payment
-                  </Link>
                 </button>
               </div>
             </div>
           </div>
         </div>
+
         <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
           <div className="flex items-start space-x-2">
             <Info className="h-5 w-5 text-gray-400 mt-0.5" />
