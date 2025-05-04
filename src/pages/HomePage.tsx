@@ -4,9 +4,8 @@ import SearchBar from '../components/SearchBar';
 import EventVideoCard from '../components/EventVideoCard';
 import { Event } from '../types';
 import { Music, Trophy, Theater, Clock } from 'lucide-react';
-import ReactPlayer from 'react-player';
 
-// Mock event data
+// Unified mock events for all categories
 const MOCK_EVENTS: Event[] = [
   {
     id: '8',
@@ -27,7 +26,7 @@ const MOCK_EVENTS: Event[] = [
     time: '19:00',
     venue: 'Cafe, San Francisco',
     location: 'San Francisco',
-    category: 'concert',
+    category: 'Concert',
     imageUrl: 'https://t4.ftcdn.net/jpg/08/52/43/17/360_F_852431753_mSZMX9iaxe7pIBjY4SB8pOwEc0qDR2iZ.jpg',
   },
   {
@@ -49,7 +48,7 @@ const MOCK_EVENTS: Event[] = [
     time: '20:00',
     venue: 'United Center, Chicago',
     location: 'Chicago',
-    category: 'concert',
+    category: 'Concert',
     imageUrl: 'https://www.usatoday.com/gcdn/-mm-/98c88f66dedc33e13e6cc28e741e44d38281b35f/c=0-0-2760-2075/local/-/media/2016/11/21/USATODAY/USATODAY/636153602053989898-538401266.jpg',
   },
   {
@@ -65,7 +64,7 @@ const MOCK_EVENTS: Event[] = [
   },
 ];
 
-// Categories with links
+// Event categories for navigation buttons
 const CATEGORIES = [
   { id: 'all', label: 'All Events', icon: Music, link: '/events' },
   { id: 'concert', label: 'Concerts', icon: Music, link: '/concert' },
@@ -77,17 +76,18 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const navigate = useNavigate();
 
+  // ✅ Redirect search to unified /search page
   const handleSearch = (query: string) => {
     if (query.trim()) {
-      navigate(`/search?query=${query}`);
+      navigate(`/search?query=${encodeURIComponent(query)}`);
     }
   };
 
-  const latestEvents: Event[] = MOCK_EVENTS.slice(0, 4); // Get the latest 4 events
+  const latestEvents: Event[] = MOCK_EVENTS.slice(0, 4);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-      {/* Video Background Hero Section */}
+      {/* Hero section with video background and search */}
       <div className="relative h-screen overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-indigo-900/90 backdrop-blur-sm"></div>
@@ -106,6 +106,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
       {/* Latest Events Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
@@ -126,7 +127,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Categories Section */}
+      {/* Categories */}
       <div className="mb-12 animate-fade-in-up stagger-delay-3">
         <div className="flex justify-center space-x-6">
           {CATEGORIES.map((category) => {
@@ -150,7 +151,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Newsletter Section */}
+      {/* Newsletter */}
       <div className="bg-gradient-to-r from-indigo-800 to-purple-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-white mb-4 animate-fade-in-up">Stay Updated</h2>

@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Clock } from 'lucide-react';
-import { Concert } from '../types'; // Make sure to import the Concert interface
+import { Concert } from '../types';
 import { format } from 'date-fns';
+
 interface ConcertCardProps {
-  concert: Concert; // Use the Concert interface
+  concert: Concert;
 }
+
 export default function ConcertCard({ concert }: ConcertCardProps) {
   return (
     <Link to={`/concert/${concert.id}`} className="group">
@@ -21,7 +23,7 @@ export default function ConcertCard({ concert }: ConcertCardProps) {
             </span>
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{concert.title}</h3>
-          <div className="space-y-2">
+          <div className="space-y-2 mb-4">
             <div className="flex items-center text-gray-600">
               <Calendar className="h-4 w-4 mr-2" />
               <span className="text-sm">{format(new Date(concert.date), 'MMM dd, yyyy')}</span>
@@ -35,6 +37,9 @@ export default function ConcertCard({ concert }: ConcertCardProps) {
               <span className="text-sm">{concert.venue}</span>
             </div>
           </div>
+          <button className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
+            Book Tickets
+          </button>
         </div>
       </div>
     </Link>
