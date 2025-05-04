@@ -30,7 +30,7 @@ public class EventController {
 
     // Get event by ID
     @GetMapping("/{id}")
-    public Optional<Event> getEventById(@PathVariable Long id) {
+    public Optional<Event> getEventById(@PathVariable String id) {
         return eventRepository.findById(id);
     }
 
@@ -49,7 +49,7 @@ public class EventController {
 
     // Delete an event
     @DeleteMapping("/{id}")
-    public void deleteEvent(@PathVariable Long id) {
+    public void deleteEvent(@PathVariable String id) {
         eventRepository.deleteById(id);
     }
 }
